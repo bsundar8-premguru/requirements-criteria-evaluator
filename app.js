@@ -1,5 +1,5 @@
 // Replace this with your deployed Cloudflare Worker URL after deployment.
-const WORKER_URL = 'https://REPLACE_WITH_YOUR_WORKER_URL';
+const WORKER_URL = 'https://requirements-criteria-evaluator.bsundar8.workers.dev/';
 
 const form = document.getElementById('evaluationForm');
 const evaluateButton = document.getElementById('evaluateButton');
