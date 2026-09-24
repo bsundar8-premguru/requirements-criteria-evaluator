@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Formative engineering design requirements and criteria evaluator." />
+  <meta name="theme-color" content="#eef5fb" />
+  <title>Requirements & Criteria Evaluator</title>
+  <link rel="icon" href="assets/requirements-criteria-evaluator-logo.png" type="image/png" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="#main" aria-label="Requirements and Criteria Evaluator home">
+        <img src="assets/requirements-criteria-evaluator-logo.png" alt="" />
+        <span>FSE Design Tools</span>
+      </a>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light mode" title="Toggle light/dark mode">
+        <span class="theme-icon" aria-hidden="true" id="themeIcon">☀️</span>
+        <span id="themeLabel">Light mode</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="shell main-layout">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Engineering Design Thinking Tool</p>
+        <h1 id="page-title">Requirements <span>&amp;</span><br />Criteria Evaluator</h1>
+        <p class="hero-lede">Turn a first draft into a stronger team conversation. Get focused feedback without handing over the engineering judgment.</p>
+        <div class="principle" aria-label="Learning process">
+          <span>Draft</span><span aria-hidden="true">→</span><span>Examine</span><span aria-hidden="true">→</span><span>Discuss</span><span aria-hidden="true">→</span><span>Revise</span>
+        </div>
+      </div>
+      <div class="hero-logo-wrap" aria-hidden="true">
+        <div class="hero-logo-halo"></div>
+        <img class="hero-logo" src="assets/requirements-criteria-evaluator-logo.png" alt="" />
+      </div>
+    </section>
+
+    <section class="intro-card" aria-labelledby="about-title">
+      <div>
+        <p class="section-kicker">Before you begin</p>
+        <h2 id="about-title">Two different jobs in one design decision</h2>
+        <p>This tool gives formative feedback on your proposed engineering design requirements and criteria. It will point out areas worth discussing and ask questions that can help your team revise the work yourselves.</p>
+      </div>
+      <div class="definition-grid">
+        <article class="definition-card">
+          <h3>Requirement</h3>
+          <p>A condition an acceptable design must satisfy. Think <strong>pass/fail</strong>.</p>
+          <p class="convention">Course format: <strong>The design must...</strong></p>
+        </article>
+        <article class="definition-card">
+          <h3>Criterion</h3>
+          <p>A characteristic used to compare acceptable design alternatives. Think <strong>better/worse</strong>.</p>
+          <p class="convention">Course format: <strong>The design shall...</strong></p>
+        </article>
+      </div>
+      <p class="small-note">A characteristic can sometimes be both: a requirement may set the minimum acceptable threshold while a criterion distinguishes among designs that meet it.</p>
+    </section>
+
+    <form id="evaluationForm" class="form-card" novalidate>
+      <div class="form-card-heading">
+        <div>
+          <p class="section-kicker">Your draft</p>
+          <h2>Give the evaluator enough to work with</h2>
+        </div>
+        <span class="time-note">3 short sections</span>
+      </div>
+      <section class="form-step">
+        <div class="step-number" aria-hidden="true">1</div>
+        <div class="step-content">
+          <label for="designContext">Describe your design situation</label>
+          <p class="field-help">Provide enough context for someone unfamiliar with the project to understand who the design is for, what problem or need you are addressing, and any important circumstances or limitations.</p>
+          <textarea id="designContext" name="designContext" rows="8" maxlength="12000" required placeholder="Example: stakeholder story, problem statement, user need, project description, or design challenge..."></textarea>
+        </div>
+      </section>
+
+      <section class="form-step">
+        <div class="step-number" aria-hidden="true">2</div>
+        <div class="step-content">
+          <label for="requirements">Enter your proposed requirements</label>
+          <p class="field-help">Enter one requirement per line when possible. Requirements describe conditions an acceptable design must satisfy.</p>
+          <textarea id="requirements" name="requirements" rows="8" maxlength="12000" required placeholder="The design must ..."></textarea>
+        </div>
+      </section>
+
+      <section class="form-step">
+        <div class="step-number" aria-hidden="true">3</div>
+        <div class="step-content">
+          <label for="criteria">Enter your proposed criteria</label>
+          <p class="field-help">Enter one criterion per line when possible. Criteria help compare otherwise acceptable design alternatives.</p>
+          <textarea id="criteria" name="criteria" rows="8" maxlength="12000" required placeholder="The design shall ..."></textarea>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button id="evaluateButton" class="primary-button" type="submit">Evaluate Requirements &amp; Criteria</button>
+      </div>
+      <p id="statusMessage" class="status-message" role="status" aria-live="polite"></p>
+    </form>
+
+    <section id="resultsSection" class="results-section" hidden tabindex="-1">
+      <div class="results-heading-row">
+        <div>
+          <p class="eyebrow">Formative feedback</p>
+          <h2>Your Evaluation</h2>
+        </div>
+        <button id="downloadPdfButton" class="secondary-button" type="button">Download as PDF</button>
+      </div>
+
+      <article class="result-panel">
+        <h3>Overall Observation</h3>
+        <p id="overallSummary"></p>
+      </article>
+
+      <article id="contextPanel" class="result-panel" hidden>
+        <h3>Context Observations</h3>
+        <ul id="contextObservations"></ul>
+      </article>
+
+      <section class="analysis-section">
+        <h3>Requirements Feedback</h3>
+        <div id="requirementsFeedback" class="feedback-list"></div>
+      </section>
+
+      <section class="analysis-section">
+        <h3>Criteria Feedback</h3>
+        <div id="criteriaFeedback" class="feedback-list"></div>
+      </section>
+
+      <article id="considerationsPanel" class="result-panel" hidden>
+        <h3>Things Worth Considering</h3>
+        <ul id="considerations"></ul>
+      </article>
+
+      <article id="discussionPanel" class="result-panel discussion-panel">
+        <h3>Team Discussion Questions</h3>
+        <ol id="discussionQuestions"></ol>
+      </article>
+
+      <p class="ai-note">AI-generated formative feedback intended to support team discussion and revision. Your team remains responsible for engineering judgments and final decisions.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell">Requirements &amp; Criteria Evaluator</div>
+  </footer>
+</body>
+</html>
